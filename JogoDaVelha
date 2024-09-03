@@ -1,0 +1,67 @@
+import os
+import random
+
+def imprimir_campo(campo):
+    print(f"{campo[0]} | {campo[1]} | {campo[2]}")
+    print("--+---+--")
+    print(f"{campo[3]} | {campo[4]} | {campo[5]}")
+    print("--+---+--")
+    print(f"{campo[6]} | {campo[7]} | {campo[8]}")
+
+def verificar_vencedor(campo, jogador):
+    condicoes_vitoria = [(0, 1, 2), (3, 4, 5), (6, 7, 8), (0, 3, 6), (1, 4, 7), (2, 5, 8), (0, 4, 8), (2, 4, 6)]
+    return any(campo[a] == campo[b] == campo[c] == jogador for a, b, c in condicoes_vitoria)
+
+def campo_cheio(campo):
+    return all(espaco in ['X', 'O'] for espaco in campo)
+
+def movimento_jogador(campo):
+    while True:
+        try:
+            movimento = int(input("Escolha uma posição (1-9): ")) - 1
+            if campo[movimento] not in ['X', 'O']:
+                campo[movimento] = 'X'
+                break
+            else:
+                print("Essa posição já está ocupada!")
+        except (IndexError, ValueError):
+            print("Por favor, escolha um número válido entre 1 e 9.")
+
+def movimento_computador(campo):
+    movimentos_disponiveis = [i for i, espaco in enumerate(campo) if espaco not in ['X', 'O']]
+    movimento = random.choice(movimentos_disponiveis)
+    campo[movimento] = 'O'
+
+def jogo_da_velha():
+    campo = [str(i + 1) for i in range(9)]
+    print("Bem-vindo ao Jogo da Velha!")
+    
+    while True:
+        os.system('clear')
+        imprimir_campo(campo)
+        movimento_jogador(campo)
+        if verificar_vencedor(campo, 'X'):
+            os.system('clear')
+            imprimir_campo(campo)
+            print("Parabéns! Você venceu!")
+            break
+        if campo_cheio(campo):
+            os.system('clear')
+            imprimir_campo(campo)
+            print("Empate!")
+            break
+        
+        os.system('clear')
+        movimento_computador(campo)
+        if verificar_vencedor(campo, 'O'):
+            os.system('clear')
+            imprimir_campo(campo)
+            print("Que pena! Você perdeu.")
+            break
+        if campo_cheio(campo):
+            os.system('clear')
+            imprimir_campo(campo)
+            print("Empate!")
+            break
+
+jogo_da_velha()
